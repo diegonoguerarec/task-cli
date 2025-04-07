@@ -30,6 +30,7 @@ def list_tasks(status):
     with open("tasks.json", mode="r") as f:
         tasks = json.load(f)
 
+    # User output
     print(f"{"ID"[:3]:<4} {"Description"[:30]:<31} {"Status"[:11]:<12} {"Created at"[:20]:<21} {"Updated at"[:20]:<21}")
     print("-"*92)
     if status == "todo":
