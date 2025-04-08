@@ -52,6 +52,31 @@ def list_tasks(status):
         for task in tasks["tasks"]:
             print(f"{str(task["id"])[:3]:<4} {task["description"][:30]:<31} {task["status"][:11]:<12} {str(task["createdAt"])[:20]:<21} {str(task["updatedAt"])[:20]:<21}")
 
+def update_task(id, new_desc):
+    # Read json file
+    with open("tasks.json", mode="r") as f:
+        tasks = json.load(f)
+
+    # Updating task
+    updated = False
+    now = datetime.datetime.now()
+    updatedAt = now.strftime("%d-%b-%Y %H:%M:%S")
+    for task in tasks["tasks"]:
+        if task["id"] == id:
+            task["description"] = new_desc
+            task["updatedAt"] = updatedAt
+            updated = True
+
+    # Writing back json file
+    with open("tasks.json", mode="w") as f:
+        json.dump(tasks, f, indent=4)
+
+    # User output
+    if updated:
+        print("Task updated successfully")
+    else:
+        print("Task not found")
+
 def main():
     # Creating json file if it does not exist
     if os.path.exists("tasks.json") == False:
@@ -74,6 +99,11 @@ def main():
                              choices=["todo", "in-progress", "done"],
                              type=str,
                              help="List tasks by status")
+    
+    # update command
+    update_parser = subparsers.add_parser("update", help="Update task description")
+    update_parser.add_argument("id", type=int, help="Task ID")
+    update_parser.add_argument("new_desc", type=str, help="New task description")
 
     args = parser.parse_args()
 
@@ -82,6 +112,9 @@ def main():
     
     if args.command == "list":
         list_tasks(args.status)
+
+    if args.command == "update":
+        update_task(args.id, args.new_desc)
 
 if __name__ == "__main__":
     main()
