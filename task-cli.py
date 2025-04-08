@@ -73,7 +73,7 @@ def update_task(id, new_desc):
 
     # User output
     if updated:
-        print("Task updated successfully")
+        print(f"Task updated successfully (ID: {id})")
     else:
         print("Task not found")
 
@@ -102,7 +102,7 @@ def mark_task(id, mark):
 
     # User output
     if updated:
-        print("Task updated successfully")
+        print(f"Task updated successfully (ID: {id})")
     else:
         print("Task not found")
 
@@ -112,14 +112,23 @@ def delete_task(id):
         tasks = json.load(f)
 
     # Delete task
+    deleted = False
     new_tasks = {"current_id": tasks["current_id"], "tasks": []}
     for task in tasks["tasks"]:
         if task["id"] != id:
             new_tasks["tasks"].append(task)
+        else:
+            deleted = True
 
     # Writing back json file
     with open("tasks.json", mode="w") as f:
         json.dump(new_tasks, f, indent=4)
+
+    # User output
+    if deleted:
+        print(f"Task deleted successfully (ID: {id})")
+    else:
+        print("Task not found")
 
 def main():
     # Creating json file if it does not exist
