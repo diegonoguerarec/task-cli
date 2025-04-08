@@ -77,6 +77,35 @@ def update_task(id, new_desc):
     else:
         print("Task not found")
 
+def mark_task(id, mark):
+    # Read json file
+    with open("tasks.json", mode="r") as f:
+        tasks = json.load(f)
+
+    # Updating task
+    updated = False
+    now = datetime.datetime.now()
+    updatedAt = now.strftime("%d-%b-%Y %H:%M:%S")
+    for task in tasks["tasks"]:
+        if task["id"] == id:
+            updated = True
+            if mark == "mark-in-progress":
+                task["status"] = "in-progress"
+                task["updatedAt"] = updatedAt
+            else:
+                task["status"] = "done"
+                task["updatedAt"] = updatedAt
+
+    # Writing back json file
+    with open("tasks.json", mode="w") as f:
+        json.dump(tasks, f, indent=4)
+
+    # User output
+    if updated:
+        print("Task updated successfully")
+    else:
+        print("Task not found")
+
 def main():
     # Creating json file if it does not exist
     if os.path.exists("tasks.json") == False:
@@ -105,6 +134,10 @@ def main():
     update_parser.add_argument("id", type=int, help="Task ID")
     update_parser.add_argument("new_desc", type=str, help="New task description")
 
+    # mark-in-progress
+    mip_parser = subparsers.add_parser("mark-in-progress", help="Mark a task as in-progress")
+    mip_parser.add_argument("id", type=int, help="Task ID")
+
     args = parser.parse_args()
 
     if args.command == "add":
@@ -115,6 +148,9 @@ def main():
 
     if args.command == "update":
         update_task(args.id, args.new_desc)
+
+    if args.command == "mark-in-progress" or args.command == "mark-done":
+        mark_task(args.id, args.command) 
 
 if __name__ == "__main__":
     main()
