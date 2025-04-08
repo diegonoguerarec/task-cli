@@ -106,6 +106,21 @@ def mark_task(id, mark):
     else:
         print("Task not found")
 
+def delete_task(id):
+    # Read json file
+    with open("tasks.json", mode="r") as f:
+        tasks = json.load(f)
+
+    # Delete task
+    new_tasks = {"current_id": tasks["current_id"], "tasks": []}
+    for task in tasks["tasks"]:
+        if task["id"] != id:
+            new_tasks["tasks"].append(task)
+
+    # Writing back json file
+    with open("tasks.json", mode="w") as f:
+        json.dump(new_tasks, f, indent=4)
+
 def main():
     # Creating json file if it does not exist
     if os.path.exists("tasks.json") == False:
@@ -142,6 +157,10 @@ def main():
     mip_parser = subparsers.add_parser("mark-done", help="Mark a task as done")
     mip_parser.add_argument("id", type=int, help="Task ID")
 
+    # delete command
+    del_parser = subparsers.add_parser("delete", help="Delete task")
+    del_parser.add_argument("id", type=int, help="Task ID")
+
     args = parser.parse_args()
 
     if args.command == "add":
@@ -155,6 +174,9 @@ def main():
 
     if args.command == "mark-in-progress" or args.command == "mark-done":
         mark_task(args.id, args.command) 
+
+    if args.command == "delete":
+        delete_task(args.id)
 
 if __name__ == "__main__":
     main()
