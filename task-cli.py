@@ -134,8 +134,12 @@ def main():
     update_parser.add_argument("id", type=int, help="Task ID")
     update_parser.add_argument("new_desc", type=str, help="New task description")
 
-    # mark-in-progress
+    # mark-in-progress command
     mip_parser = subparsers.add_parser("mark-in-progress", help="Mark a task as in-progress")
+    mip_parser.add_argument("id", type=int, help="Task ID")
+
+    # mark-done command
+    mip_parser = subparsers.add_parser("mark-done", help="Mark a task as done")
     mip_parser.add_argument("id", type=int, help="Task ID")
 
     args = parser.parse_args()
